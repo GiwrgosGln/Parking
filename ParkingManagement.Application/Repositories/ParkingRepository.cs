@@ -8,7 +8,7 @@ public class ParkingRepository : IParkingRepository
 {
     private readonly IDbConnectionFactory _dbConnectionFactory;
 
-    private ParkingRepository(IDbConnectionFactory dbConnectionFactory)
+    public ParkingRepository(IDbConnectionFactory dbConnectionFactory)
     {
         _dbConnectionFactory = dbConnectionFactory;
     }
@@ -47,17 +47,14 @@ public class ParkingRepository : IParkingRepository
     public async Task<IEnumerable<Parking>> GetAllAsync(CancellationToken token = default)
     {
         using var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
-        var result = await connection.QueryAsync(new CommandDefinition("""
-            select * from parkings
+
+        var result = await connection.QueryAsync<Parking>(
+            new CommandDefinition("""
+                SELECT id, name, address, city
+                FROM parkings
             """, cancellationToken: token));
 
-        return result.Select(x => new Parking
-        {
-            Id = x.id,
-            Name = x.Name,
-            Address = x.Address,
-            City = x.City
-        });
+        return result;
     }
 
     public async Task<bool> UpdateAsync(Parking parking, CancellationToken token = default)
@@ -66,13 +63,15 @@ public class ParkingRepository : IParkingRepository
         using var transaction = connection.BeginTransaction();
 
         var result = await connection.ExecuteAsync(new CommandDefinition("""
-            update parking set name = @Name, address = @Address, city = @City 
-            where id = @Id
-            """, parking, cancellationToken: token));
+        update parkings 
+        set name = @Name, address = @Address, city = @City 
+        where id = @Id
+        """, parking, cancellationToken: token));
 
         transaction.Commit();
         return result > 0;
     }
+
 
     public async Task<bool> DeleteByIdAsync(Guid id, CancellationToken token = default)
     {

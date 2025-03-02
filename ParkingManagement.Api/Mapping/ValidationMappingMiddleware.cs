@@ -1,7 +1,7 @@
 using FluentValidation;
 using ParkingManagement.Contracts.Responses;
 
-namespace Movies.Api.Mapping;
+namespace ParkingManagement.Api.Mapping;
 
 public class ValidationMappingMiddleware
 {
