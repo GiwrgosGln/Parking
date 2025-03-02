@@ -9,7 +9,7 @@ public class ParkingValidator : AbstractValidator<Parking>
 {
     private readonly IParkingRepository _parkingRepository;
 
-    public MovieValidator(IParkingRepository parkingRepository)
+    public ParkingValidator(IParkingRepository parkingRepository)
     {
         _parkingRepository = parkingRepository;
         RuleFor(x => x.Id)

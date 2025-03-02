@@ -27,7 +27,7 @@ public class ParkingController : ControllerBase
     }
 
     [HttpGet(ApiEndpoints.Parkings.Get)]
-    public async Task<IActionResult> Get([FromRoute] string id,
+    public async Task<IActionResult> Get([FromRoute] Guid id,
         CancellationToken token)
     {
         var parking = await _parkingService.GetByIdAsync(id, token);

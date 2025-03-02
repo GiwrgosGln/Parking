@@ -31,7 +31,7 @@ public class ParkingService : IParkingService
         return _parkingRepository.GetAllAsync(token);
     }
 
-    public async Task<Parking?> UpdateAsync(Parking parkings, CancellationToken token = default)
+    public async Task<Parking?> UpdateAsync(Parking parking, CancellationToken token = default)
     {
         await _parkingValidator.ValidateAndThrowAsync(parking, cancellationToken: token);
         var parkingExists = await _parkingRepository.ExistsByIdAsync(parking.Id, token);

@@ -1,3 +1,7 @@
+using Dapper;
+using ParkingManagement.Application.Models;
+using ParkingManagement.Application.Database;
+
 namespace ParkingManagement.Application.Repositories;
 
 public class ParkingRepository : IParkingRepository
@@ -81,5 +85,13 @@ public class ParkingRepository : IParkingRepository
 
         transaction.Commit();
         return result > 0;
+    }
+
+    public async Task<bool> ExistsByIdAsync(Guid id, CancellationToken token = default)
+    {
+        using var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
+        return await connection.ExecuteScalarAsync<bool>(new CommandDefinition("""
+            select count(1) from parkings where id = @id
+            """, new { id }, cancellationToken: token));
     }
 }
